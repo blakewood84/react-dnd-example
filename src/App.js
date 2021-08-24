@@ -1,25 +1,67 @@
 import logo from './logo.svg';
 import './App.css';
+import React from 'react';
+import { Container, Draggable } from 'react-smooth-dnd';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      list: [
+        {
+          id: 1,
+          name: 'test',
+        },
+        {
+          id: 2,
+          name: 'frank',
+        },
+        {
+          id: 3,
+          name: 'henry',
+        },
+        {
+          id: 4,
+          name: 'julia',
+        },
+      ]
+    }
+  }
+
+  onDrop(dropResult) {
+    const { removedIndex, addedIndex, payload, element } = dropResult;
+    let list = this.state.list;
+
+    list.splice(removedIndex, 1);
+    list.splice(addedIndex, 0, payload);
+    
+    this.setState({ list: list });
+
+  }
+
+  getChildPayload(index) {
+    return this.state.list[index];
+  }
+
+  render() {
+    return (
+      <div>
+        <Container onDrop={this.onDrop.bind(this)} getChildPayload={this.getChildPayload.bind(this)}>
+          {
+            this.state.list.map(item => {
+              return (
+                <Draggable key={item.id}>
+                  {item.name}
+                </Draggable>
+              )
+              
+            })
+          }
+        </Container>
+      </div>
+    );
+  }
 }
 
 export default App;
